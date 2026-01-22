@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/e-banking-front" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/itp-config-repo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/itp-gateway" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/itp-identity-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/next-shadcn-dashboard-starter" vcs="Git" />
+  </component>
+</project>

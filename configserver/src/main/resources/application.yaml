@@ -1,0 +1,30 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: itp-config-server
+  profiles:
+    active: vault,git #native,git
+  cloud:
+    config:
+      server:
+        vault:
+          host: localhost
+          port: 8200
+          scheme: http
+          authentication: token
+          token: myroot
+          kv-version: 2
+          backend: secret
+          profile-separator: /
+        git:
+          uri: ${GH_URI}
+          default-label: main
+          search-paths: "/**"
+          username: ${GH_USERNAME}
+          password: ${GH_TOKEN}
+        native:
+          search-locations:
+            - file:/home/kong-sisovandara/Documents/ISTAD/Spring Microservices/microservices/itp-config-repo/
+            - file:/home/kong-sisovandara/Documents/ISTAD/Spring Microservices/microservices/itp-config-repo/{application}/
+

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/account-service" />
+        <option name="gradleJvm" value="openjdk-25" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/account-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/admin-bff" />
+        <option name="gradleJvm" value="openjdk-25" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/admin-bff" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/configserver" />
+        <option name="gradleJvm" value="openjdk-25" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/configserver" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/customer-service" />
+        <option name="gradleJvm" value="openjdk-25" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/customer-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/eurekaserver" />
+        <option name="gradleJvm" value="openjdk-25" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/eurekaserver" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/front-bff" />
+        <option name="gradleJvm" value="openjdk-25" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/front-bff" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/itp-gateway" />
+        <option name="gradleJvm" value="openjdk-25" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/itp-gateway" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/itp-identity-service" />
+        <option name="gradleJvm" value="openjdk-25" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/itp-identity-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
