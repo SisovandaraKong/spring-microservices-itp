@@ -1,0 +1,9 @@
+{
+  "names": [
+    "jvm.memory.used",
+    "jvm.memory.max",
+    "http.server.requests",
+    "system.cpu.usage",
+    "jdbc.connections.active"
+  ]
+}

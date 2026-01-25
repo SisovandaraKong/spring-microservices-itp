@@ -1,0 +1,73 @@
+# Global configuration
+global:
+  scrape_interval: 15s        # How often to scrape targets
+  evaluation_interval: 15s    # How often to evaluate rules
+  scrape_timeout: 10s         # Timeout for each scrape
+  
+  # Attach these labels to all time series
+  external_labels:
+    cluster: 'production-cluster'
+    region: 'us-east-1'
+
+# Alertmanager configuration (optional, for later)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - 'alertmanager:9093'
+
+# Load alerting rules
+rule_files:
+  - 'alerts.yml'
+
+# Scrape configurations
+scrape_configs:
+  
+  # Monitor Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          env: 'production'
+  
+  # Order Service
+  - job_name: 'order-service'
+    metrics_path: '/actuator/prometheus'  # Spring Boot Actuator endpoint
+    scrape_interval: 10s                  # Override global interval
+    static_configs:
+      - targets: 
+          - 'order-service:8080'          # Single instance
+        labels:
+          service: 'order'
+          env: 'production'
+          team: 'commerce'
+  
+  # Payment Service (Multiple instances)
+  - job_name: 'payment-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          - 'payment-service-1:8081'
+          - 'payment-service-2:8081'
+          - 'payment-service-3:8081'
+        labels:
+          service: 'payment'
+          env: 'production'
+  
+  # Inventory Service
+  - job_name: 'inventory-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['inventory-service:8082']
+        labels:
+          service: 'inventory'
+          env: 'production'
+  
+  # Notification Service
+  - job_name: 'notification-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['notification-service:8083']
+        labels:
+          service: 'notification'
+          env: 'production'

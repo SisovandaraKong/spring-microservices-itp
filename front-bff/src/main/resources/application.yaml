@@ -19,13 +19,18 @@ spring:
             locator:
               enabled: true
               lower-case-service-id: true
+          default-filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin Access-Control-Request-Headers
+            - SaveSession
+            - TokenRelay=
           routes:
             - id: frontbff
               uri: http://localhost:3000
               predicates:
                 - Path=/**
-              filters:
-                - TokenRelay=
+
+#              filters:
+#                - TokenRelay=
 
   security:
     oauth2:

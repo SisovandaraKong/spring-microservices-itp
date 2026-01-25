@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-
+import * as React from "react";
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
 
 import {
@@ -26,6 +26,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface MenuItem {
   title: string;
@@ -35,7 +36,7 @@ interface MenuItem {
   items?: MenuItem[];
 }
 
-interface Navbar1Props {
+interface NavbarProps {
   logo?: {
     url: string;
     src: string;
@@ -48,15 +49,11 @@ interface Navbar1Props {
       title: string;
       url: string;
     };
+    logout: {
+      title: string;
+      url: string;
+    };
   };
-  dashboard?: {
-    title: string;
-    url: string;
-  }
-}
-
-type IsAuthType = {
-  isAuthenticated: boolean
 }
 
 export const Navbar = ({
@@ -98,72 +95,113 @@ export const Navbar = ({
         },
       ],
     },
-    {
-      title: "Team",
-      url: "/team",
-    },
-    {
-      title: "Contact Us",
-      url: "/contact",
-    },
-    {
-      title: "About Us",
-      url: "/about",
-    },
-    {
-      title: "FAQ",
-      url: "/faq",
-    },
+    { title: "Account", url: "/accounts" },
+    { title: "Contact Us", url: "/contact" },
+    { title: "About Us", url: "/about" },
+    { title: "FAQ", url: "/faq" },
   ],
   auth = {
-    login: { title: "Login", url: "/oauth2/authorization/nextjs" },
+    login: {
+      title: "Login",
+      url: "/oauth2/authorization/itp-frontbff",
+    },
+    logout: {
+      title: "Logout",
+      url: "/logout",
+    },
   },
-  dashboard = {
-    title: "Dashboard", url: "/dashboard"
-  }
-}: Navbar1Props) => {
+}: NavbarProps) => {
+  
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  useEffect(() => {
+    function getMe() {
+      fetch("/auth/me")
+        .then((res) => res.json())
+        .then((json) => {
+          console.log(json);
+        });
+    }
+
+    function checkAuth() {
+      fetch("/auth/is-authenticated")
+        .then((res) => res.json())
+        .then((json) => {
+          console.log(json);
+          setIsAuthenticated(json.isAuthenticated);
+        });
+    }
+    checkAuth();
+    getMe();
+  }, []);
+
+
+  const [loadingAuth, setLoadingAuth] = useState(true);
+  const [isAuthed, setIsAuthed] = useState(false);
+
+  // check auth status from gateway
+  useEffect(() => {
+    fetch("/auth/me2", { credentials: "include" })
+      .then((r) => setIsAuthed(r.ok))
+      .catch(() => setIsAuthed(false))
+      .finally(() => setLoadingAuth(false));
+  }, []);
+
+  const AuthButton = () => {
+    if (loadingAuth) return null;
+
+    if (!isAuthed) {
+      return (
+        <Button asChild variant="outline" size="sm">
+          {/* full redirect for OAuth */}
+          <a href={auth.login.url}>{auth.login.title}</a>
+        </Button>
+      );
+    }
+
+    return (
+      <Button asChild variant="outline" size="sm">
+        {/* full redirect to clear session */}
+        <a href={auth.logout.url}>{auth.logout.title}</a>
+      </Button>
+    );
+  };
 
   return (
     <section className="py-4">
       <div className="container m-auto">
-        {/* Desktop Menu */}
+        {/* Desktop */}
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
-            {/* Logo */}
             <Link href={logo.url} className="flex items-center gap-2">
               <img src={logo.src} className="max-h-8" alt={logo.alt} />
-              {/* <span className="text-lg font-semibold tracking-tighter">
-                {logo.title}
-              </span> */}
             </Link>
-            <div className="flex items-center">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
+
+            <NavigationMenu>
+              <NavigationMenuList>
+                {menu.map((item) => renderMenuItem(item))}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
+
           <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
-                <Link href='/login'>Log in</Link>
-            </Button>
+            <AuthButton />
           </div>
         </nav>
-
-        {/* Mobile Menu */}
+        {/* Mobile */}
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
-            {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
               <img src={logo.src} className="max-h-8" alt={logo.alt} />
             </a>
+
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
                   <Menu className="size-4" />
                 </Button>
               </SheetTrigger>
+
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>
@@ -172,6 +210,7 @@ export const Navbar = ({
                     </a>
                   </SheetTitle>
                 </SheetHeader>
+
                 <div className="flex flex-col gap-6 p-4">
                   <Accordion
                     type="single"
@@ -181,11 +220,19 @@ export const Navbar = ({
                     {menu.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
 
-                  <div className="flex flex-col gap-3">
+                  {!loadingAuth && (
                     <Button asChild variant="outline">
-                      <Link href={auth.login.url}>{auth.login.title}</Link>
+                      <a
+                        href={
+                          isAuthed ? auth.logout.url : auth.login.url
+                        }
+                      >
+                        {isAuthed
+                          ? auth.logout.title
+                          : auth.login.title}
+                      </a>
                     </Button>
-                  </div>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>

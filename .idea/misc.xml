@@ -5,6 +5,7 @@
     <file type="web" url="file://$PROJECT_DIR$/account-service" />
     <file type="web" url="file://$PROJECT_DIR$/configserver" />
     <file type="web" url="file://$PROJECT_DIR$/customer-service" />
+    <file type="web" url="file://$PROJECT_DIR$/front-bff" />
     <file type="web" url="file://$PROJECT_DIR$/itp-gateway" />
     <file type="web" url="file://$PROJECT_DIR$/itp-identity-service" />
   </component>
