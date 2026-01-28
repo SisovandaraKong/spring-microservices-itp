@@ -1,24 +1,14 @@
 server:
-  port: 9999
+  port: 20262
 spring:
   application:
-    name: itp-gateway
-
+    name: pipeline
 
   profiles:
     active: dev
   config:
     import: optional:configserver:http://localhost:8888
 
-
-  cloud:
-    gateway:
-      server:
-        webflux:
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
 
   security:
     oauth2:
@@ -32,7 +22,9 @@ spring:
             client-id: itp-standard
             client-secret: qwerqwer
             redirect-uri: http://localhost:9999/login/oauth2/code/itp-standard
-            authorization-grant-type: authorization_code
+            authorization-grant-type: client_credentials
+#              - authorization_code
+#              - client_credentials
             scope:
               - openid # Auto issue access token
               - profile # Get profile
@@ -40,3 +32,4 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9090
+

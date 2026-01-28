@@ -22,7 +22,7 @@ public class SecurityConfig {
                                               ReactiveClientRegistrationRepository clientRegistrationRepository) {
 
         http.authorizeExchange(exchange -> exchange
-                .pathMatchers("/accounts/**", "/auth/**").authenticated()
+                .pathMatchers("/accounts/**", "/auth/**", "/profile").authenticated()
                 .anyExchange().permitAll()
         );
 

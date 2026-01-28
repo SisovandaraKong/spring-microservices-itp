@@ -8,6 +8,7 @@
     <file type="web" url="file://$PROJECT_DIR$/front-bff" />
     <file type="web" url="file://$PROJECT_DIR$/itp-gateway" />
     <file type="web" url="file://$PROJECT_DIR$/itp-identity-service" />
+    <file type="web" url="file://$PROJECT_DIR$/pipeline-service" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="21" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

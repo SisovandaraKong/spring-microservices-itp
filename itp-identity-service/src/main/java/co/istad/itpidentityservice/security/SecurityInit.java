@@ -174,7 +174,7 @@ public class SecurityInit {
             jpaRegisteredClientRepository.save(itpFrontBff);
         }
 
-        if (registeredClient2 == null) {
+        if (registeredClient3 == null) {
             jpaRegisteredClientRepository.save(itpAdminBff);
         }
 

@@ -1,15 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
-
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Book, Menu, Sunset, Trees, Zap, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -25,6 +27,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -54,6 +62,13 @@ interface NavbarProps {
       url: string;
     };
   };
+}
+
+interface ProfileData {
+  username: string;
+  email: string;
+  fullName: string;
+  profileImage: string;
 }
 
 export const Navbar = ({
@@ -88,8 +103,7 @@ export const Navbar = ({
         },
         {
           title: "Support",
-          description:
-            "Get in touch with our support team or visit our community forums",
+          description: "Get in touch with our support team or visit our community forums",
           icon: <Zap className="size-5 shrink-0" />,
           url: "#",
         },
@@ -111,41 +125,43 @@ export const Navbar = ({
     },
   },
 }: NavbarProps) => {
-  
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
-  useEffect(() => {
-    function getMe() {
-      fetch("/auth/me")
-        .then((res) => res.json())
-        .then((json) => {
-          console.log(json);
-        });
-    }
-
-    function checkAuth() {
-      fetch("/auth/is-authenticated")
-        .then((res) => res.json())
-        .then((json) => {
-          console.log(json);
-          setIsAuthenticated(json.isAuthenticated);
-        });
-    }
-    checkAuth();
-    getMe();
-  }, []);
-
-
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [isAuthed, setIsAuthed] = useState(false);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
 
-  // check auth status from gateway
   useEffect(() => {
-    fetch("/auth/me2", { credentials: "include" })
-      .then((r) => setIsAuthed(r.ok))
-      .catch(() => setIsAuthed(false))
-      .finally(() => setLoadingAuth(false));
+    async function checkAuthAndFetchProfile() {
+      try {
+        const response = await fetch("/auth/me", { credentials: "include" });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setIsAuthed(true);
+          setProfile(data);
+        } else {
+          setIsAuthed(false);
+          setProfile(null);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setIsAuthed(false);
+        setProfile(null);
+      } finally {
+        setLoadingAuth(false);
+      }
+    }
+
+    checkAuthAndFetchProfile();
   }, []);
+
+  const getInitials = () => {
+    if (!profile?.fullName) return "U";
+    const names = profile.fullName.split(" ");
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+    }
+    return profile.fullName.substring(0, 2).toUpperCase();
+  };
 
   const AuthButton = () => {
     if (loadingAuth) return null;
@@ -153,17 +169,45 @@ export const Navbar = ({
     if (!isAuthed) {
       return (
         <Button asChild variant="outline" size="sm">
-          {/* full redirect for OAuth */}
           <a href={auth.login.url}>{auth.login.title}</a>
         </Button>
       );
     }
 
     return (
-      <Button asChild variant="outline" size="sm">
-        {/* full redirect to clear session */}
-        <a href={auth.logout.url}>{auth.logout.title}</a>
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={profile?.profileImage} alt={profile?.fullName} />
+              <AvatarFallback>{getInitials()}</AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">{profile?.fullName}</p>
+              <p className="text-xs leading-none text-muted-foreground">
+                {profile?.email}
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link href="/profile" className="cursor-pointer">
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <a href={auth.logout.url} className="cursor-pointer">
+              <span>{auth.logout.title}</span>
+            </a>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   };
 
@@ -188,6 +232,7 @@ export const Navbar = ({
             <AuthButton />
           </div>
         </nav>
+
         {/* Mobile */}
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
@@ -212,6 +257,19 @@ export const Navbar = ({
                 </SheetHeader>
 
                 <div className="flex flex-col gap-6 p-4">
+                  {isAuthed && profile && (
+                    <div className="flex items-center space-x-4 pb-4 border-b">
+                      <Avatar>
+                        <AvatarImage src={profile.profileImage} />
+                        <AvatarFallback>{getInitials()}</AvatarFallback>
+                      </Avatar>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium">{profile.fullName}</p>
+                        <p className="text-xs text-muted-foreground">{profile.email}</p>
+                      </div>
+                    </div>
+                  )}
+
                   <Accordion
                     type="single"
                     collapsible
@@ -221,17 +279,18 @@ export const Navbar = ({
                   </Accordion>
 
                   {!loadingAuth && (
-                    <Button asChild variant="outline">
-                      <a
-                        href={
-                          isAuthed ? auth.logout.url : auth.login.url
-                        }
-                      >
-                        {isAuthed
-                          ? auth.logout.title
-                          : auth.login.title}
-                      </a>
-                    </Button>
+                    <>
+                      {isAuthed && (
+                        <Button asChild variant="outline">
+                          <Link href="/profile">Profile</Link>
+                        </Button>
+                      )}
+                      <Button asChild variant="outline">
+                        <a href={isAuthed ? auth.logout.url : auth.login.url}>
+                          {isAuthed ? auth.logout.title : auth.login.title}
+                        </a>
+                      </Button>
+                    </>
                   )}
                 </div>
               </SheetContent>
