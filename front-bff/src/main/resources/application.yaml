@@ -28,8 +28,18 @@ spring:
               uri: http://localhost:3000
               predicates:
                 - Path=/**
+            - id: pipeline
+              uri: lb://pipeline
+              predicates:
+                - Path=/pipeline/**
+              filters:
+                - RewritePath=/pipeline/?(?<segment>.*), /$\{segment}
+                - name: CircuitBreaker
+                  args:
+                    name: pipelineCircuitBreaker
 
-#              filters:
+
+  #              filters:
 #                - TokenRelay=
 
   security:

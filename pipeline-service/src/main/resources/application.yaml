@@ -33,3 +33,28 @@ spring:
         jwt:
           issuer-uri: http://localhost:9090
 
+# Resilience4j
+#resilience4j:
+#  circuitbreaker:
+#    configs:
+#      default:
+#        sliding-window-size: 10 # Number of requests
+#        failure-rate-threshold: 50 # Percentage of 50%
+#        permitted-number-of-calls-in-half-open-state: 2 # Number of requests before change ot half-open
+#        wait-duration-in-open-state: 10000
+#    instances:
+#      accountService:
+#        base-config: default
+
+# Actuator (add this if not present)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#  health:
+#    circuitbreakers:
+#      enabled: true
+logging:
+  level:
+    co.istad.dara.pipeline_service: DEBUG

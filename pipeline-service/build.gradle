@@ -29,6 +29,12 @@ ext {
 }
 
 dependencies {
+	implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
+//	implementation 'org.springframework:spring-aop'
+	implementation 'org.aspectj:aspectjweaver'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
 	implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
 	testImplementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client-test'
 	implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'

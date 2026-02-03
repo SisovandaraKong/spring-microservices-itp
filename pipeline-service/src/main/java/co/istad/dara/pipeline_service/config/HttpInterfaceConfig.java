@@ -8,14 +8,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class HttpInterfaceConfig {
 
+    // For request by hostname
     @Bean
     public JsonPlaceholderClient JsonPlaceholderService(HttpInterfaceFactory factory) {
-        return factory.createClient("https://jsonplaceholder.typicode.com", JsonPlaceholderClient.class);
+        return factory.createNormalClient("https://jsonplaceholder.typicode.com", JsonPlaceholderClient.class);
     }
 
+    // For request by loadbalance
     @Bean
-    public AccountClient accountService(HttpInterfaceFactory factory){
-        return factory.createClient("http://localhost:20261", AccountClient.class);
+    public AccountClient accountClientService(HttpInterfaceFactory factory){
+        return factory.createLoadBalanedClient("http://account", AccountClient.class);
     }
 
 
